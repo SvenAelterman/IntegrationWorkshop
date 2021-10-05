@@ -39,7 +39,7 @@ resource workshopResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' =
   }
 }
 
-module keyVault 'keyVault.bicep' = {
+module keyVaultModule 'keyVault.bicep' = {
   name: '${deploymentName}-KV'
   scope: workshopResourceGroup
   params: {
@@ -53,7 +53,7 @@ module keyVault 'keyVault.bicep' = {
   }
 }
 
-module sql 'sql.bicep' = {
+module sqlModule 'sql.bicep' = {
   name: '${deploymentName}-SQL'
   scope: workshopResourceGroup
   params: {
@@ -65,8 +65,8 @@ module sql 'sql.bicep' = {
   }
 }
 
-module adf 'adf.bicep' = {
-  name: '${deploymentName}-ADF'
+module apimModule 'apim.bicep' = {
+  name: '${deploymentName}-APIM'
   scope: workshopResourceGroup
   params: {
     resourceNameFormat: resourceNameFormat
@@ -74,16 +74,26 @@ module adf 'adf.bicep' = {
   }
 }
 
-module logicApps 'logicapps.bicep' = {
+module logAnalyticsModule 'logAnalytics.bicep' = {
+  name: '${deploymentName}-LogAnalytics'
+  scope: workshopResourceGroup
+  params: {
+    resourceNameFormat: resourceNameFormat
+    location: location
+  }
+}
+
+module logicAppsModule 'logicApps.bicep' = {
   name: '${deploymentName}-LogicApps'
   scope: workshopResourceGroup
   params: {
     resourceNameFormat: resourceNameFormat
     location: location
+    workspaceId: logAnalyticsModule.outputs.workspaceId
   }
 }
 
-module appInsights 'appInsights.bicep' = {
+module appInsightsModule 'appInsights.bicep' = {
   name: '${deploymentName}-AI'
   scope: workshopResourceGroup
   params: {
@@ -92,4 +102,4 @@ module appInsights 'appInsights.bicep' = {
   }
 }
 
-output keyVaultRbacGuid string = keyVault.outputs.keyVaultRbacGuid
+output keyVaultRbacGuid string = keyVaultModule.outputs.keyVaultRbacGuid

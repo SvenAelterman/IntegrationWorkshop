@@ -7,6 +7,7 @@ param rbacName string = newGuid()
 param secretName string
 
 var role = {
+  // Azure ID of the Key Vault Secrets Officer role ID
   'Key Vault Secrets Officer': '${subscription().id}/providers/Microsoft.Authorization/roleDefinitions/b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
 }
 
