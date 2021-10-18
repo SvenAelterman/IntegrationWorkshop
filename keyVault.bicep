@@ -8,7 +8,8 @@ param secretName string
 
 var role = {
   // Azure ID of the Key Vault Secrets Officer role ID
-  'Key Vault Secrets Officer': '${subscription().id}/providers/Microsoft.Authorization/roleDefinitions/b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
+  'Key Vault Secrets Officer': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')
+  //'Key Vault Secrets Officer': '${subscription().id}/providers/Microsoft.Authorization/roleDefinitions/b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
@@ -39,7 +40,7 @@ resource databasePasswordSecret 'Microsoft.KeyVault/vaults/secrets@2021-06-01-pr
 
 // FIXME: Latest API version from auto-complete doesn't work in Azure
 resource keyVaultRbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
-  name: rbacName
+  name: guid(KvSecretsOfficerPrincipalId)
   scope: keyVault
   properties: {
     principalId: KvSecretsOfficerPrincipalId
@@ -47,5 +48,4 @@ resource keyVaultRbac 'Microsoft.Authorization/roleAssignments@2020-08-01-previe
   }
 }
 
-output keyVaultRbacGuid string = keyVaultRbac.name
 output keyVaultName string = keyVault.name

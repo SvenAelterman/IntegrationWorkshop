@@ -83,13 +83,29 @@ module logAnalyticsModule 'logAnalytics.bicep' = {
   }
 }
 
-module logicAppsModule 'logicApps.bicep' = {
-  name: '${deploymentName}-LogicApps'
+module sqlLogicAppsModule 'logicApps.bicep' = {
+  name: '${deploymentName}-SqlLogicApp'
   scope: workshopResourceGroup
   params: {
-    resourceNameFormat: resourceNameFormat
+    resourceNameFormat: '{0}-{1}-workshop-${location}-${deploymentSequence}'
     location: location
     workspaceId: logAnalyticsModule.outputs.workspaceId
+    keyVaultName: keyVaultModule.outputs.keyVaultName
+    logicAppName: 'sql'
+    definition: 'apiFromSql'
+  }
+}
+
+module emptyLogicAppsModule 'logicApps.bicep' = {
+  name: '${deploymentName}-EmptyLogicApp'
+  scope: workshopResourceGroup
+  params: {
+    resourceNameFormat: '{0}-{1}-workshop-${location}-${deploymentSequence}'
+    location: location
+    workspaceId: logAnalyticsModule.outputs.workspaceId
+    keyVaultName: keyVaultModule.outputs.keyVaultName
+    logicAppName: 'empty'
+    definition: 'empty'
   }
 }
 
@@ -101,5 +117,3 @@ module appInsightsModule 'appInsights.bicep' = {
     location: location
   }
 }
-
-output keyVaultRbacGuid string = keyVaultModule.outputs.keyVaultRbacGuid
