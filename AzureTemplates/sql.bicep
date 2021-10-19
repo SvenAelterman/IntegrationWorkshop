@@ -34,3 +34,6 @@ resource sqlDb 'Microsoft.Sql/servers/databases@2021-02-01-preview' = {
     sampleName: 'AdventureWorksLT'
   }
 }
+
+output sqlServerUrl string = sqlServer.properties.fullyQualifiedDomainName
+output sqlUserName string = sqlServer.properties.administratorLogin

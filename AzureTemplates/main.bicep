@@ -51,10 +51,8 @@ module keyVaultModule 'keyVault.bicep' = {
     // Key Vault has a maximum of 24 characters
     resourceNameFormat: kvResourceNameFormat
     location: location
-    databasePassword: databasePassword
     KvSecretsOfficerPrincipalId: kvSecretsOfficerPrincipalId
-    rbacName: kvRbacName
-    secretName: secretName
+    roles: rolesModule.outputs.roles
   }
 }
 
@@ -135,5 +133,16 @@ module appInsightsModule 'appInsights.bicep' = {
     resourceNameFormat: resourceNameFormat
     location: location
     workspaceId: logAnalyticsModule.outputs.workspaceId
+  }
+}
+
+module keyVaultSecretsModule 'keyVaultSecrets.bicep' = {
+  name: '${deploymentName}-KeyVaultSecrets'
+  scope: workshopResourceGroup
+  params: {
+    databasePassword: databasePassword
+    sqlFqdn: sqlModule.outputs.sqlServerUrl
+    keyVaultName: keyVaultModule.outputs.keyVaultName
+    databaseUser: sqlModule.outputs.sqlUserName
   }
 }

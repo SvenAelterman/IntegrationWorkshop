@@ -1,16 +1,9 @@
 param resourceNameFormat string
 param location string
 @secure()
-param databasePassword string
 param KvSecretsOfficerPrincipalId string
-param rbacName string = newGuid()
-param secretName string
 
-var role = {
-  // Azure ID of the Key Vault Secrets Officer role ID
-  'Key Vault Secrets Officer': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')
-  //'Key Vault Secrets Officer': '${subscription().id}/providers/Microsoft.Authorization/roleDefinitions/b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
-}
+param roles object
 
 resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
   name: format(resourceNameFormat, 'kv')
@@ -30,21 +23,13 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
   }
 }
 
-resource databasePasswordSecret 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = {
-  name: '${keyVault.name}/${secretName}'
-  properties: {
-    contentType: 'The SQL Server dbadmin user\'s password'
-    value: databasePassword
-  }
-}
-
 // FIXME: Latest API version from auto-complete doesn't work in Azure
 resource keyVaultRbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
   name: guid(KvSecretsOfficerPrincipalId)
   scope: keyVault
   properties: {
     principalId: KvSecretsOfficerPrincipalId
-    roleDefinitionId: role['Key Vault Secrets Officer']
+    roleDefinitionId: roles['Key Vault Secrets Officer']
   }
 }
 
