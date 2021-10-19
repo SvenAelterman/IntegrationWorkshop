@@ -6,16 +6,13 @@ param keyVaultName string
 param logicAppName string = 'blank'
 param definition string
 
+param roles object
+
 // TODO: Alert rules
 
 var definitionFiles = {
   'blank': 'LogicAppDefs/blank.json'
   'apiFromSql': 'LogicAppDefs/apiFromSql.json'
-}
-
-var role = {
-  // Azure ID of the Key Vault Secrets Officer role ID
-  'Key Vault Secrets Officer': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')
 }
 
 resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
@@ -64,6 +61,6 @@ resource logicAppRbac 'Microsoft.Authorization/roleAssignments@2020-08-01-previe
   scope: keyVault
   properties: {
     principalId: logicApp.identity.principalId
-    roleDefinitionId: role['Key Vault Secrets Officer']
+    roleDefinitionId: roles['Key Vault Secrets Officer']
   }
 }

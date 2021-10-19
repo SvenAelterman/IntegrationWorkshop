@@ -39,6 +39,11 @@ resource workshopResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' =
   }
 }
 
+module rolesModule 'roles.bicep' = {
+  name: '${deploymentName}-Roles'
+  scope: workshopResourceGroup
+}
+
 module keyVaultModule 'keyVault.bicep' = {
   name: '${deploymentName}-KV'
   scope: workshopResourceGroup
@@ -93,6 +98,7 @@ module sqlLogicAppsModule 'logicApps.bicep' = {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     logicAppName: 'sql'
     definition: 'apiFromSql'
+    roles: rolesModule.outputs.roles
   }
 }
 
@@ -106,6 +112,7 @@ module emptyLogicAppsModule 'logicApps.bicep' = {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     logicAppName: 'empty'
     definition: 'empty'
+    roles: rolesModule.outputs.roles
   }
 }
 
@@ -115,9 +122,9 @@ module standardLogicAppsModule 'logicAppStandard.bicep' = {
   params: {
     appInsightsName: appInsightsModule.outputs.appInsightsName
     location: location
-    definition: ''
     keyVaultName: keyVaultModule.outputs.keyVaultName
     resourceNameFormat: resourceNameFormat
+    roles: rolesModule.outputs.roles
   }
 }
 

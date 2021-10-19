@@ -2,15 +2,9 @@ param resourceNameFormat string
 param location string
 
 param keyVaultName string
-param definition string
 param appInsightsName string
 
-// TODO: put in module
-var role = {
-  // Azure ID of the Key Vault Secrets Officer role ID
-  'Key Vault Secrets Officer': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')
-  //'Key Vault Secrets Officer': '${subscription().id}/providers/Microsoft.Authorization/roleDefinitions/b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
-}
+param roles object
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: appInsightsName
@@ -116,6 +110,6 @@ resource logicAppRbac 'Microsoft.Authorization/roleAssignments@2020-08-01-previe
   scope: keyVault
   properties: {
     principalId: logicAppSvc.identity.principalId
-    roleDefinitionId: role['Key Vault Secrets Officer']
+    roleDefinitionId: roles['Key Vault Secrets Officer']
   }
 }
