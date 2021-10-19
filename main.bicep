@@ -109,11 +109,24 @@ module emptyLogicAppsModule 'logicApps.bicep' = {
   }
 }
 
+module standardLogicAppsModule 'logicAppStandard.bicep' = {
+  name: '${deploymentName}-StandardLogicApp'
+  scope: workshopResourceGroup
+  params: {
+    appInsightsName: appInsightsModule.outputs.appInsightsName
+    location: location
+    definition: ''
+    keyVaultName: keyVaultModule.outputs.keyVaultName
+    resourceNameFormat: resourceNameFormat
+  }
+}
+
 module appInsightsModule 'appInsights.bicep' = {
   name: '${deploymentName}-AI'
   scope: workshopResourceGroup
   params: {
     resourceNameFormat: resourceNameFormat
     location: location
+    workspaceId: logAnalyticsModule.outputs.workspaceId
   }
 }
